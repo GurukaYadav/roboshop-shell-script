@@ -3,7 +3,7 @@ frontend:
 mongodb:
 	bash components/mongodh.sh
 catalogue:
-  bash components/catalogue.sh
+	bash components/catalogue.sh
 redis:
 	bash components/redis.sh
 user:
