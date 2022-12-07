@@ -13,7 +13,7 @@ npm install
 
 
 mv /home/roboshop/user/systemd.service /etc/systemd/system/user.service
-sed -i -e 's/REDIS_ENDPOINT/redis.roboshop.internal/' -e 's/MONGO_ENDPOINT/mongodb.roboshop.internal/ ' /etc/systemd/system/user.service
+sed -i -e 's/REDIS_ENDPOINT/redis.roboshop.internal/' -e 's/MONGO_ENDPOINT/mongodb.roboshop.internal/' /etc/systemd/system/user.service
 systemctl daemon-reload
 systemctl start user
 systemctl enable user
