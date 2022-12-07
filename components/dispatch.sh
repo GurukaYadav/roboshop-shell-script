@@ -14,6 +14,6 @@ go build
 
 mv /home/roboshop/dispatch/systemd.service /etc/systemd/system/dispatch.service
 #sed -i -e 's/AMQPHOST'
-# systemctl daemon-reload
-# systemctl enable dispatch
-# systemctl start dispatch
+systemctl daemon-reload
+systemctl enable dispatch
+systemctl restart dispatch
