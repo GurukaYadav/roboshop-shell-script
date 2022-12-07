@@ -7,7 +7,7 @@ systemctl start mysqld
 
 MYSQL_DEFAULT_PASSWORD=$(grep 'temporary password' /var/log/mysqld.log | awk '{print $NF}' )
 
-echo "ALTER USER 'root'@'localhost' IDENTIFIED BY "${MYSQL_PASSWORD}"; flush privileges; exit;"
+echo "ALTER USER 'root'@'localhost' IDENTIFIED BY "${MYSQL_PASSWORD}";"
 echo "uninstall plugin validate_password;"
 
 
