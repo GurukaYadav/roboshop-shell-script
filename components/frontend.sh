@@ -11,6 +11,6 @@ mv frontend-main/static/* .
 mv frontend-main/localhost.conf /etc/nginx/default.d/roboshop.conf
 systemctl restart nginx
 
-sed -i -e '/catalogue/  s/localhost/catalogue-roboshop.internal/' /etc/nginx/default.d/roboshop.conf
+sed -i -e '/catalogue/  s/localhost/catalogue.roboshop.internal/' /etc/nginx/default.d/roboshop.conf
 
 systemctl restart nginx
