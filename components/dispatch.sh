@@ -10,7 +10,7 @@ go mod init dispatch
 go get
 go build
 
-mv /home/roboshop/dispatch/systemd.service /etc/systemd/system/dispatch.service
+mv /home/roboshop/dispatch/systemd.service  /etc/systemd/system/dispatch.service
 sed -i -e 's/AMQPHOST/rabbitmq.roboshop.internal/'  /etc/systemd/system/dispatch.service
 systemctl daemon-reload
 systemctl enable dispatch
