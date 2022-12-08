@@ -5,3 +5,12 @@ CHECK_ROOT() {
 	exit 1
  fi
 }
+
+CHECK_STAT() {
+ if [$? -ne 0]; then
+ 	echo "failed"
+   	exit 2
+ else
+ 	echo "success"
+ fi
+}
