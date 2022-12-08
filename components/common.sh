@@ -6,7 +6,7 @@ CHECK_ROOT() {
  fi
 }
 
-rm -f ${LOG}
+
 LOG=/tmp/roboshop.log
 
 
