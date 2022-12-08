@@ -1,8 +1,7 @@
 CHECK_ROOT() {
  USER_ID=$(id -u)
  if [ $USER_ID -ne 0 ]; then
-	echo You are Non Root user
-	echo You can run this script with Root user or with sudo
+	echo -e "\e[31m You should be running this script as Root user or Sudo this script\e[0m"
 	exit 1
  fi
 }
