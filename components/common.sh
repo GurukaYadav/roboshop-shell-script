@@ -7,7 +7,7 @@ CHECK_ROOT() {
 }
 
 CHECK_STAT() {
- if [$? -ne 0]; then
+ if [ $? -ne 0 ]; then
  	echo "failed"
    	exit 2
  else
