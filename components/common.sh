@@ -11,9 +11,9 @@ rm -f ${LOG}
 
 CHECK_STAT() {
  if [ $? -ne 0 ]; then
- 	echo "failed"
+ 	echo -e "\e[31mFailure\e[0m"
    	exit 2
  else
- 	echo "success"
+ 	echo -e "\e[33mSuccess\e[0m"
  fi
 }
