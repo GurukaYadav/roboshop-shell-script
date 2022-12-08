@@ -6,6 +6,9 @@ CHECK_ROOT() {
  fi
 }
 
+LOG=/tmp/roboshop.log
+rm -f ${LOG}
+
 CHECK_STAT() {
  if [ $? -ne 0 ]; then
  	echo "failed"
