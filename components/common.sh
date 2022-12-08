@@ -6,9 +6,9 @@ CHECK_ROOT() {
  fi
 }
 
-
-LOG=/tmp/roboshop.log
 rm -f ${LOG}
+LOG=/tmp/roboshop.log
+
 
 
 CHECK_STAT() {
@@ -24,5 +24,6 @@ echo "-------------------------"
 
 PRINT() {
  echo "-------------$1------------"
+ echo "$1"
 
 }
