@@ -6,12 +6,14 @@ CHECK_ROOT() {
  fi
 }
 
-LOG=/tmp/roboshop.log
 rm -f ${LOG}
+LOG=/tmp/roboshop.log
+
 
 CHECK_STAT() {
  if [ $? -ne 0 ]; then
  	echo -e "\e[31mFailure\e[0m"
+ 	echo -e "\nRefer logs-${LOG} for errors"
    	exit 2
  else
  	echo -e "\e[32mSuccess\e[0m"
