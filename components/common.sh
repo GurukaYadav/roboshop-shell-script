@@ -14,6 +14,6 @@ CHECK_STAT() {
  	echo -e "\e[31mFailure\e[0m"
    	exit 2
  else
- 	echo -e "\e[33mSuccess\e[0m"
+ 	echo -e "\e[32mSuccess\e[0m"
  fi
 }
