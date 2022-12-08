@@ -11,6 +11,7 @@ LOG=/tmp/roboshop.log
 
 
 CHECK_STAT() {
+echo "-------------------------"
  if [ $? -ne 0 ]; then
  	echo -e "\e[31mFailure\e[0m"
  	echo -e "\nRefer logs-${LOG} for errors\n"
@@ -18,4 +19,8 @@ CHECK_STAT() {
  else
  	echo -e "\e[32mSuccess\e[0m"
  fi
+}
+
+PRINT() {
+ echo "-------------$1------------"
 }
