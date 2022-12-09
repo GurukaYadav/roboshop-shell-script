@@ -14,6 +14,7 @@ PRINT "Create application user"
 id roboshop
 if [ $? -ne 0 ]; then
 	useradd roboshop &>>${LOG}
+fi
 CHECK_STAT $?
 
 PRINT "Download cart content"
