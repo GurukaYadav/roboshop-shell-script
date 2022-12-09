@@ -73,7 +73,7 @@ NODEJS() {
  CHECK_STAT $?
 
  systemctl daemon-reload
- systemctl enable ${COMPONENT}
+ systemctl enable ${COMPONENT} &>>${LOG}
 
  PRINT "Start ${COMPONENT} service"
  systemctl restart ${COMPONENT} &>>${LOG}
