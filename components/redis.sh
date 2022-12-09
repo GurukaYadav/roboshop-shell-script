@@ -16,3 +16,4 @@ CHECK_STAT $?
 
 PRINT "Start redis service"
 systemctl enable redis &>>${LOG} && systemctl restart redis &>>${LOG}
+CHECK_STAT $?
