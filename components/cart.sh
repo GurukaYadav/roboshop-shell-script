@@ -11,7 +11,9 @@ yum install nodejs -y &>>${LOG}
 CHECK_STAT $?
 
 PRINT "Create application user"
-useradd roboshop &>>${LOG}
+id roboshop
+if [ $? -ne 0 ]; then
+	useradd roboshop &>>${LOG}
 CHECK_STAT $?
 
 PRINT "Download cart content"
