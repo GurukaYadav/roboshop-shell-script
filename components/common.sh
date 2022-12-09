@@ -10,7 +10,7 @@ LOG=/tmp/roboshop.log
 rm -rf ${LOG}
 
 CHECK_STAT() {
-echo "-------------------------"
+echo "-------------------------" &>>${LOG}
  if [ $1 -ne 0 ]; then
  	echo -e "\e[31mFailure\e[0m"
  	echo -e "\nRefer logs-${LOG} for errors\n"
@@ -21,6 +21,6 @@ echo "-------------------------"
 }
 
 PRINT() {
- echo "-------------$1------------"
+ echo "-------------$1------------" &>>${LOG}
  echo "$1"
 }
