@@ -79,3 +79,33 @@ NODEJS() {
  systemctl restart ${COMPONENT} &>>${LOG}
  CHECK_STAT $?
 }
+
+NGINX() {
+ CHECK_ROOT
+
+ PRINT "Install nginx"
+ yum install nginx -y &>>${LOG}
+ CHECKSTAT $?
+
+ PRINT "Download ${COMPONENT} content"
+ curl -s -L -o /tmp/${COMPONENT}.zip "https://github.com/roboshop-devops-project/${COMPONENT}/archive/main.zip" &>>${LOG}
+ CHECKSTAT $?
+
+ cd /usr/share/nginx/html
+
+ PRINT "Remove old content"
+ rm -rf * &>>${LOG}
+ CHECKSTAT $?
+
+ PRINT "Organize ${COMPONENT} content"
+ unzip /tmp/${COMPONENT}.zip &>>${LOG} && mv ${COMPONENT}-main/static/* . &>>${LOG} && mv ${COMPONENT}-main/localhost.conf /etc/nginx/default.d/roboshop.conf &>>${LOG}
+ CHECKSTAT $?
+
+ PRINT "Setup systemd configuration"
+ sed -i -e '/catalogue/  s/localhost/catalogue.roboshop.internal/' -e '/user/  s/localhost/user.roboshop.internal/' -e '/cart/  s/localhost/cart.roboshop.internal/' -e '/shipping/  s/localhost/shipping.roboshop.internal/' -e '/payment/  s/localhost/payment.roboshop.internal/' /etc/nginx/default.d/roboshop.conf &>>${LOG}
+ CHECKSTAT $?
+
+ PRINT "Start nginx service"
+ systemctl enable nginx &>>${LOG} && systemctl restart nginx &>>${LOG}
+ CHECKSTAT $?
+}
