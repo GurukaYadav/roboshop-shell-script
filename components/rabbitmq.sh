@@ -6,8 +6,12 @@ if [ -z "${RABBITMQ_USER_PASSWORD}"]; then
 	echo "Env Variable RABBITMQ_USER_PASSWORD needed"
 fi
 
-PRINT "Download erlang and rabbitmq repos"
-curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | sudo bash   https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | sudo bash &>>${LOG}
+PRINT "Download erlang repos"
+curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | sudo bash  &>>${LOG}
+CHECK_STAT $?
+
+PRINT "Download rabbitmq repos"
+curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | sudo bash  &>>${LOG}
 CHECK_STAT $?
 
 PRINT "Install erlang and rabbitmq"
