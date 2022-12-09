@@ -14,7 +14,7 @@ PRINT "Update mongod configuration"
 sed -i -e 's/127.0.0.1/0.0.0.0/' /etc/mongod.conf &>>${LOG}
 CHECK_STAT $?
 
-PRINT " Start mongodb service"
+PRINT "Start mongodb service"
 systemctl enable mongod &>>${LOG} && systemctl restart mongod &>>${LOG}
 CHECK_STAT $?
 
