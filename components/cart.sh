@@ -2,7 +2,15 @@ source components/common.sh
 
 CHECK_ROOT
 
-curl --silent --location https://rpm.nodesource.com/setup_16.x | sudo bash -
+curl --silent --location https://rpm.nodesource.com/setup_16.x | sudo bash
+if [ $? -ne 0 ]; then
+	echo "Setting up nodejs repos"
+	echo "failure"
+	exit 2
+else
+	echo "success"
+fi
+
 yum install nodejs -y
 
 useradd roboshop
