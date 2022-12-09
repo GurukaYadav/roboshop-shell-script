@@ -10,12 +10,16 @@ PRINT "Download erlang repos"
 curl -s https://packagecloud.io/install/repositories/rabbitmq/erlang/script.rpm.sh | sudo bash  &>>${LOG}
 CHECK_STAT $?
 
+PRINT "Install erlang"
+yum install erlang -y &>>${LOG}
+CHECK_STAT $?
+
 PRINT "Download rabbitmq repos"
 curl -s https://packagecloud.io/install/repositories/rabbitmq/rabbitmq-server/script.rpm.sh | sudo bash  &>>${LOG}
 CHECK_STAT $?
 
-PRINT "Install erlang and rabbitmq"
-yum install erlang rabbitmq-server -y &>>${LOG}
+PRINT "Install rabbitmq"
+yum install rabbitmq-server -y &>>${LOG}
 CHECK_STAT $?
 
 PRINT "Start rabbitmq"
