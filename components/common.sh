@@ -72,11 +72,8 @@ NODEJS() {
  mv /home/roboshop/${COMPONENT}/systemd.service /etc/systemd/system/${COMPONENT}.service &>>${LOG}
  CHECK_STAT $?
 
- systemctl daemon-reload
- systemctl enable ${COMPONENT} &>>${LOG}
-
  PRINT "Start ${COMPONENT} service"
- systemctl restart ${COMPONENT} &>>${LOG}
+ systemctl daemon-reload && systemctl enable ${COMPONENT} &>>${LOG} && systemctl restart ${COMPONENT} &>>${LOG}
  CHECK_STAT $?
 }
 
@@ -106,6 +103,6 @@ NGINX() {
  CHECK_STAT $?
 
  PRINT "Start nginx service"
- systemctl enable nginx &>>${LOG} && systemctl start nginx &>>${LOG}
+ systemctl enable nginx &>>${LOG} && systemctl restart nginx &>>${LOG}
  CHECK_STAT $?
 }
