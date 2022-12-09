@@ -25,6 +25,44 @@ PRINT() {
  echo "$1"
 }
 
+APP_COMMON_SETUP(){
+  PRINT "Create application user"
+  id roboshop
+  if [ $? -ne 0 ]; then
+ 	useradd roboshop &>>${LOG}
+  fi
+  CHECK_STAT $?
+
+  PRINT "Download ${COMPONENT} content"
+  curl -s -L -o /tmp/${COMPONENT}.zip "https://github.com/roboshop-devops-project/${COMPONENT}/archive/main.zip" &>>${LOG}
+  CHECK_STAT $?
+
+  cd /home/roboshop
+
+  PRINT "Remove old ${COMPONENT} content"
+  rm -rf ${COMPONENT} &>>${LOG}
+  CHECK_STAT $?
+
+  PRINT "Extract ${COMPONENT} content"
+  unzip /tmp/${COMPONENT}.zip &>>${LOG}
+  CHECK_STAT $?
+}
+
+SYSTEMD() {
+  PRINT "Update systemd configuration"
+  mv /home/roboshop/${COMPONENT}/systemd.service /etc/systemd/system/${COMPONENT}.service &>>${LOG}
+  CHECK_STAT $?
+
+  PRINT "Setup systemd configuration"
+  sed -i -e 's/CARTENDPOINT/cart.roboshop.internal/' -e 's/DBHOST/mysql.roboshop.internal/' -e 's/REDIS_ENDPOINT/redis.roboshop.internal/'  -e 's/CATALOGUE_ENDPOINT/catalogue.roboshop.internal/'  -e 's/MONGO_DNSNAME/mongodb.roboshop.internal/'  -e 's/MONGO_ENDPOINT/mongodb.roboshop.internal/' -e 's/CARTHOST/cart.roboshop.internal/'  -e 's/USERHOST/user.roboshop.internal/' -e 's/AMQPHOST/rabbitmq.roboshop.internal/'  /etc/systemd/system/${COMPONENT}.service &>>${LOG}
+  CHECK_STAT $?
+
+  PRINT "Start ${COMPONENT} service"
+  systemctl daemon-reload && systemctl enable ${COMPONENT} &>>${LOG} && systemctl restart ${COMPONENT} &>>${LOG}
+  CHECK_STAT $?
+}
+
+
 NODEJS() {
  CHECK_ROOT
 
@@ -36,26 +74,7 @@ NODEJS() {
  yum install nodejs -y &>>${LOG}
  CHECK_STAT $?
 
- PRINT "Create application user"
- id roboshop
- if [ $? -ne 0 ]; then
-	useradd roboshop &>>${LOG}
- fi
- CHECK_STAT $?
-
- PRINT "Download ${COMPONENT} content"
- curl -s -L -o /tmp/${COMPONENT}.zip "https://github.com/roboshop-devops-project/${COMPONENT}/archive/main.zip" &>>${LOG}
- CHECK_STAT $?
-
- cd /home/roboshop &>>${LOG}
-
- PRINT "Remove old ${COMPONENT} content"
- rm -rf ${COMPONENT} &>>${LOG}
- CHECK_STAT $?
-
- PRINT "Extract ${COMPONENT} content"
- unzip /tmp/${COMPONENT}.zip &>>${LOG}
- CHECK_STAT $?
+ APP_COMMON_SETUP
 
  mv ${COMPONENT}-main ${COMPONENT}
  cd ${COMPONENT}
@@ -64,17 +83,7 @@ NODEJS() {
  npm install &>>${LOG}
  CHECK_STAT $?
 
- PRINT "Update systemD configuration"
- sed -i -e 's/REDIS_ENDPOINT/redis.roboshop.internal/'  -e 's/CATALOGUE_ENDPOINT/catalogue.roboshop.internal/'  -e 's/MONGO_DNSNAME/mongodb.roboshop.internal/'  -e 's/MONGO_ENDPOINT/mongodb.roboshop.internal/'  /home/roboshop/${COMPONENT}/systemd.service &>>${LOG}
- CHECK_STAT $?
-
- PRINT "Setup systemD configuration"
- mv /home/roboshop/${COMPONENT}/systemd.service /etc/systemd/system/${COMPONENT}.service &>>${LOG}
- CHECK_STAT $?
-
- PRINT "Start ${COMPONENT} service"
- systemctl daemon-reload && systemctl enable ${COMPONENT} &>>${LOG} && systemctl restart ${COMPONENT} &>>${LOG}
- CHECK_STAT $?
+ SYSTEMD
 }
 
 NGINX() {
@@ -114,26 +123,7 @@ PYTHON() {
  yum install python36 gcc python3-devel -y &>>${LOG}
  CHECK_STAT $?
 
- PRINT "Create application user"
-  id roboshop
-  if [ $? -ne 0 ]; then
- 	useradd roboshop &>>${LOG}
-  fi
-  CHECK_STAT $?
-
- cd /home/roboshop
-
- PRINT "Remove old ${COMPONENT} content"
- rm -rf ${COMPONENT} &>>${LOG}
- CHECK_STAT $?
-
- PRINT "Download ${COMPONENT} content"
- curl -L -s -o /tmp/${COMPONENT}.zip "https://github.com/roboshop-devops-project/${COMPONENT}/archive/main.zip" &>>${LOG}
- CHECK_STAT $?
-
- PRINT "Extract ${COMPONENT} content"
- unzip /tmp/${COMPONENT}.zip &>>${LOG}
- CHECK_STAT $?
+ APP_COMMON_SETUP
 
  mv ${COMPONENT}-main ${COMPONENT}
  PRINT "Install python dependencies"
@@ -147,14 +137,24 @@ PYTHON() {
  sed -i -e '/^uid/ c /uid=${USER_ID}/'  -e '/^gid/ c /gid=${GROUP_ID}/' /home/roboshop/${COMPONENT}/${COMPONENT}.ini
  CHECK_STAT $?
 
- PRINT "Update systemd configuration"
- mv /home/roboshop/${COMPONENT}/systemd.service /etc/systemd/system/${COMPONENT}.service &>>${LOG}
+ SYSTEMD
+}
+
+MAVEN() {
+ CHECK_ROOT
+
+ PRINT "Install maven"
+ yum install maven -y &>>${LOG}
  CHECK_STAT $?
 
- PRINT "Setup systemd configuration"
- sed -i -e 's/CARTHOST/cart.roboshop.internal/'  -e 's/USERHOST/user.roboshop.internal/' -e 's/AMQPHOST/rabbitmq.roboshop.internal/'  /etc/systemd/system/${COMPONENT}.service &>>${LOG}
+ APP_COMMON_SETUP
+
+ mv ${COMPONENT}-main ${COMPONENT}
+ cd shipping
+
+ PRINT "Install maven dependencies"
+ mvn clean package &>>${LOG} && mv target/${COMPONENT}-1.0.jar ${COMPONENT}.jar &>>${LOG}
  CHECK_STAT $?
 
- PRINT "Start ${COMPONENT} service"
- systemctl daemon-reload && systemctl enable ${COMPONENT} &>>${LOG} && systemctl restart ${COMPONENT} &>>${LOG}
+ SYSTEMD
 }
