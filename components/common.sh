@@ -106,3 +106,55 @@ NGINX() {
  systemctl enable nginx &>>${LOG} && systemctl restart nginx &>>${LOG}
  CHECK_STAT $?
 }
+
+PYTHON() {
+ CHECK_ROOT
+
+ PRINT "Install python 3"
+ yum install python36 gcc python3-devel -y &>>${LOG}
+ CHECK_STAT $?
+
+ PRINT "Create application user"
+  id roboshop
+  if [ $? -ne 0 ]; then
+ 	useradd roboshop &>>${LOG}
+  fi
+  CHECK_STAT $?
+
+ cd /home/roboshop
+
+ PRINT "Remove old ${COMPONENT} content"
+ rm -rf ${COMPONENT} &>>${LOG}
+ CHECK_STAT $?
+
+ PRINT "Download ${COMPONENT} content"
+ curl -L -s -o /tmp/${COMPONENT}.zip "https://github.com/roboshop-devops-project/${COMPONENT}/archive/main.zip" &>>${LOG}
+ CHECK_STAT $?
+
+ PRINT "Extract ${COMPONENT} content"
+ unzip /tmp/${COMPONENT}.zip &>>${LOG}
+ CHECK_STAT $?
+
+ mv ${COMPONENT}-main ${COMPONENT}
+ PRINT "Install python dependencies"
+ cd /home/roboshop/${COMPONENT} && pip3 install -r requirements.txt &>>${LOG}
+ CHECK_STAT $?
+
+ USER_ID=$(id -u roboshop)
+ GROUP_ID=$(id -g roboshop)
+
+ PRINT "Update user and group id's"
+ sed -i -e '/^uid/ c /uid=${USER_ID}/'  -e '/^gid/ c /gid=${GROUP_ID}/' /home/roboshop/${COMPONENT}/${COMPONENT}.ini
+ CHECK_STAT $?
+
+ PRINT "Update systemd configuration"
+ mv /home/roboshop/${COMPONENT}/systemd.service /etc/systemd/system/${COMPONENT}.service &>>${LOG}
+ CHECK_STAT $?
+
+ PRINT "Setup systemd configuration"
+ sed -i -e 's/CARTHOST/cart.roboshop.internal/'  -e 's/USERHOST/user.roboshop.internal/' -e 's/AMQPHOST/rabbitmq.roboshop.internal/'  /etc/systemd/system/${COMPONENT}.service &>>${LOG}
+ CHECK_STAT $?
+
+ PRINT "Start ${COMPONENT} service"
+ systemctl daemon-reload && systemctl enable ${COMPONENT} &>>${LOG} && systemctl restart ${COMPONENT} &>>${LOG}
+}
